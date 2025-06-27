@@ -384,20 +384,9 @@ OpenKernel has been recognized for:
 | Framework A | 8K tok/s/GPU | 89ms P50 | Baseline | Generic |
 | Framework B | 12K tok/s/GPU | 67ms P50 | -23% | Limited |
 
-## Enterprise Features
-
-- **24/7 Support**: Enterprise support available
-- **Custom Development**: Tailored solutions for specific needs
-- **Training & Consulting**: Expert guidance and training
-- **SLA Guarantees**: 99.9% uptime commitment
-- **Compliance**: SOC2, GDPR, HIPAA ready
-
 ## Support
-
-- **GitHub Issues**: Bug reports and feature requests
-- **Discord**: Real-time community support
-- **Email**: support@openkernel.ai
-- **Enterprise**: enterprise@openkernel.ai
+Author: Nik Jois
+Email: nikjois@llamasearch.ai
 
 ## License
 
