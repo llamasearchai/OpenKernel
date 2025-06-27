@@ -16,8 +16,6 @@
 
 OpenKernel is a comprehensive AI infrastructure toolkit that combines advanced CUDA kernel development with large-scale AI training, inference optimization, and research frameworks. This project demonstrates world-class capabilities in GPU computing, distributed systems, and modern AI infrastructure engineering.
 
-**Perfect for demonstrating advanced AI infrastructure engineering expertise to top-tier companies.**
-
 ### Core Capabilities
 
 - **CUDA Kernel Development & Optimization** - Custom kernel generation with 3.2x average speedup
