@@ -1,6 +1,6 @@
 # OpenKernel - Advanced CUDA Kernel Development & AI Training Infrastructure
 
-**The Ultimate AI Infrastructure Engineering Toolkit**
+**A simple AI Infrastructure Engineering Toolkit**
 
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![CUDA 11.0+](https://img.shields.io/badge/CUDA-11.0+-green.svg)](https://developer.nvidia.com/cuda-toolkit)
@@ -14,7 +14,7 @@
 
 ## Overview
 
-OpenKernel is a comprehensive AI infrastructure toolkit that combines advanced CUDA kernel development with large-scale AI training, inference optimization, and research frameworks. This project demonstrates world-class capabilities in GPU computing, distributed systems, and modern AI infrastructure engineering.
+OpenKernel is a comprehensive AI infrastructure toolkit that combines advanced CUDA kernel development with large-scale AI training, inference optimization, and research frameworks. 
 
 ### Core Capabilities
 
