@@ -9,10 +9,10 @@ description = "Advanced CUDA Kernel Development & AI Training Infrastructure Too
 readme = "README.md"
 license = {text = "MIT"}
 authors = [
-    {name = "OpenKernel Contributors", email = "contact@openkernel.ai"}
+    {name = "Nik Jois", email = "nikjois@llamasearch.ai"}
 ]
 maintainers = [
-    {name = "OpenKernel Contributors", email = "contact@openkernel.ai"}
+    {name = "Nik Jois", email = "nikjois@llamasearch.ai"}
 ]
 keywords = [
     "cuda", "gpu", "ai", "machine-learning", "deep-learning", 
