@@ -1,0 +1,178 @@
+version: '3.8'
+
+services:
+  openkernel-dev:
+    build:
+      context: .
+      target: development
+    container_name: openkernel-dev
+    volumes:
+      - .:/app
+      - openkernel-cache:/app/cache
+      - openkernel-logs:/app/logs
+      - openkernel-checkpoints:/app/checkpoints
+    ports:
+      - "8000:8000"
+      - "8080:8080"
+      - "6006:6006"  # TensorBoard
+    environment:
+      - CUDA_VISIBLE_DEVICES=0,1,2,3
+      - OPENKERNEL_ENV=development
+      - OPENKERNEL_LOG_LEVEL=DEBUG
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    networks:
+      - openkernel-network
+    command: ["python", "-m", "openkernel.cli", "--interactive"]
+
+  openkernel-prod:
+    build:
+      context: .
+      target: production
+    container_name: openkernel-prod
+    volumes:
+      - openkernel-cache:/app/cache
+      - openkernel-logs:/app/logs
+      - openkernel-checkpoints:/app/checkpoints
+      - openkernel-results:/app/results
+    ports:
+      - "8000:8000"
+    environment:
+      - CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7
+      - OPENKERNEL_ENV=production
+      - OPENKERNEL_LOG_LEVEL=INFO
+      - OPENKERNEL_WORKERS=8
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+        limits:
+          memory: 32G
+    networks:
+      - openkernel-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import openkernel; print('healthy')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  openkernel-benchmark:
+    build:
+      context: .
+      target: benchmark
+    container_name: openkernel-benchmark
+    volumes:
+      - openkernel-benchmark-results:/app/benchmark-results
+      - openkernel-logs:/app/logs
+    environment:
+      - CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7
+      - OPENKERNEL_ENV=benchmark
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    networks:
+      - openkernel-network
+    profiles:
+      - benchmark
+
+  tensorboard:
+    image: tensorflow/tensorflow:latest-gpu
+    container_name: openkernel-tensorboard
+    volumes:
+      - openkernel-logs:/logs
+    ports:
+      - "6007:6006"
+    command: ["tensorboard", "--logdir=/logs", "--host=0.0.0.0", "--port=6006"]
+    networks:
+      - openkernel-network
+    profiles:
+      - monitoring
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: openkernel-prometheus
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus-data:/prometheus
+    ports:
+      - "9090:9090"
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+    networks:
+      - openkernel-network
+    profiles:
+      - monitoring
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: openkernel-grafana
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./monitoring/grafana/dashboards:/var/lib/grafana/dashboards
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=openkernel123
+      - GF_USERS_ALLOW_SIGN_UP=false
+    networks:
+      - openkernel-network
+    profiles:
+      - monitoring
+
+  nvidia-exporter:
+    image: mindprince/nvidia_gpu_prometheus_exporter:0.1
+    container_name: openkernel-nvidia-exporter
+    ports:
+      - "9445:9445"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    networks:
+      - openkernel-network
+    profiles:
+      - monitoring
+
+volumes:
+  openkernel-cache:
+    driver: local
+  openkernel-logs:
+    driver: local
+  openkernel-checkpoints:
+    driver: local
+  openkernel-results:
+    driver: local
+  openkernel-benchmark-results:
+    driver: local
+  prometheus-data:
+    driver: local
+  grafana-data:
+    driver: local
+
+networks:
+  openkernel-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16 
