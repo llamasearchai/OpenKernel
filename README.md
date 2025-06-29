@@ -401,6 +401,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-**Built by the OpenKernel team**
-
 *Making AI infrastructure accessible, scalable, and production-ready.* 
